@@ -1,6 +1,7 @@
 # Note
 This fork contains my edits of the original code, in order to compare
 against [block aligner](https://github.com/Daniel-Liu-c0deb0t/block-aligner).
+The original code is by [ocxtal](https://github.com/ocxtal).
 
 To run:
 
