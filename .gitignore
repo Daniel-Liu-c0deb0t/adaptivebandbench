@@ -13,6 +13,7 @@ a.out
 *.pyc
 *sublime*
 *.txt
+*.txt.gz
 *.csv
 *.tsv
 .gdb_history

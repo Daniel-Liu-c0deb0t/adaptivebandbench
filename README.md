@@ -1,3 +1,20 @@
+# Note
+This fork contains my edits of the original code, in order to compare
+against [block aligner](https://github.com/Daniel-Liu-c0deb0t/block-aligner).
+
+To run:
+
+1. `curl -OL https://github.com/Daniel-Liu-c0deb0t/diff-bench-paper/releases/download/v1.0/sequences.txt.gz`
+2. `gunzip sequences.txt.gz`
+3. Make sure `gcc` versions are correct in the `makefile`.
+4. `mkdir bin`
+5. `./custom_scores.sh`
+
+This will produce multiple tab-separated files that can be used to
+compare against block aligner.
+
+The rest of this readme is the original description:
+
 # Assessment on Adaptive-Banded Dynamic Programming algorithm for the nucleotide semi-global alignment
 
 

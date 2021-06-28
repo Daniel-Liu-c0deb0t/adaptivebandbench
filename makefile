@@ -1,8 +1,13 @@
 
-CC=gcc
-CXX=g++
+CC=gcc-11
+CXX=g++-11
+ifdef PRINT_SCORES
+CFLAGS=-Wall -Wno-unused-function -std=c99 -O3 -msse4.1 -fopenmp -DPRINT_SCORES
+CXXFLAGS=-Wall -Wno-unused-function -std=gnu++11 -O3 -msse4.1 -fopenmp -DPRINT_SCORES
+else
 CFLAGS=-Wall -Wno-unused-function -std=c99 -O3 -msse4.1 -fopenmp
 CXXFLAGS=-Wall -Wno-unused-function -std=gnu++11 -O3 -msse4.1 -fopenmp
+endif
 
 BENCH_SRCS=main.cc blast.cc simdblast.cc adaptive.cc scalar.cc vertical.cc diagonal.cc striped.cc
 BENCH_MODULES=wave/DB.o wave/QV.o wave/align.o ssw.o parasail/cpuid.o parasail/io.o parasail/matrix_lookup.o parasail/memory.o parasail/memory_sse.o parasail/time.o sg_striped_sse41_128_16.o full.o

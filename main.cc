@@ -23,7 +23,7 @@
 #define GE 					( 1 )
 #define XDROP				( 70 )			// equal to the default of blastn (X = 100 (bit)) w/ (M, X, Gi, Ge) = (1, -1, 2, 1)
 
-// #define OMIT_SCORE			1
+#define OMIT_SCORE			1
 #define PARASAIL_SCORE		1
 #define RECALL_THRESH		0.99
 // #define DEBUG_PATH
@@ -422,7 +422,7 @@ void calc_score(struct params_s *params)
 			*/
 		}
 	#else
-		for(i = 0; i < kv_size(params->seq) / 2; i++) {
+		for(uint64_t i = 0; i < kv_size(params->seq) / 2; i++) {
 			kv_at(params->ascore, i) = 0;
 			kv_at(params->apos, i) = 0;
 			kv_at(params->bpos, i) = 0;
@@ -460,6 +460,13 @@ void bench_function(struct params_s *params, struct mapping_s *map, char const *
 		bench_end(b);
 		score += s;
 
+#ifdef PRINT_SCORES
+        printf("%s\t%s\t%lld\t%lld\t%lld\n",
+                (char const *)kv_at(params->seq, i * 2),
+                (char const *)kv_at(params->seq, i * 2 + 1),
+                s, 0, 0);
+#endif
+
 		maxpos_t *mp = (maxpos_t *)params->work;
 		if(s != kv_at(params->ascore, i) || mp->apos != kv_at(params->apos, i) || mp->bpos != kv_at(params->bpos, i)) {
 			debug("a(%s), b(%s)", kv_at(params->seq, i * 2), kv_at(params->seq, i * 2 + 1));
@@ -470,7 +477,9 @@ void bench_function(struct params_s *params, struct mapping_s *map, char const *
 		}
 	}
 	bench_end(b);
+#ifndef PRINT_SCORES
 	print_bench(params->flag, name, bench_get(b), score);
+#endif
 	return;
 }
 
@@ -478,12 +487,19 @@ int main(int argc, char *argv[])
 {
 	/* name -> pointer mapping */
 	#define fn(_name)	{ #_name, _name##_affine }
+#ifdef PRINT_SCORES
 	struct mapping_s map[] = {
+		/* static banded w/ standard matrix */
+		fn(diagonal)
+	};
+#else
+    struct mapping_s map[] = {
 		/* static banded w/ standard matrix */
 		fn(scalar), fn(vertical), fn(diagonal), fn(striped),
 		/* non-standard banded */
 		fn(blast), fn(simdblast), fn(adaptive)
 	};
+#endif
 	#undef fn
 
 	int i;
@@ -494,12 +510,14 @@ int main(int argc, char *argv[])
 	}
 
 	srand(params.rdseed);
+#ifndef PRINT_SCORES
 	print_msg(params.flag, "seed:%lu\tm: %d\tx: %d\tgi: %d\tge: %d\txdrop: %d\tbw: %d\tmax_len: %d\tmax_cnt: %d\n",
 		params.rdseed,
 		params.m, params.x, params.gi, params.ge,
 		params.xt, params.bw,
 		params.max_len, params.max_cnt
 	);
+#endif
 
 	if(params.pipe != 0) {
 		read_seq(&params);
